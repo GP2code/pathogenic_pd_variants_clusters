@@ -122,7 +122,7 @@ metric1,metric2 = st.columns([1,1])
 num_snps = len(merge1['snpID'].unique())
 num_sample_metrics = len(merge1['Sample_ID'].unique())
 
-merge1 = merge1.drop(columns=['GenTrain_Score','chromosome','position','phenotype','ancestry'])
+merge1 = merge1.drop(columns=['GenTrain_Score','chromosome','position','ancestry'])
 
 # get SNP options
 snp_options = ['Select SNP!']+[snp for snp in merge1['SNP'].unique()]
