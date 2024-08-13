@@ -58,11 +58,11 @@ def plot_clusters(df, x_col='theta', y_col='r', gtype_col='gt', title='snp plot'
     }
 
     # gtypes_list = (df[gtype_col].unique())
-    xmin, xmax = df[x_col].min(), df[x_col].max()
-    ymin, ymax = df[y_col].min(), df[y_col].max()
+    # xmin, xmax = df[x_col].min(), df[x_col].max()
+    # ymin, ymax = df[y_col].min(), df[y_col].max()
 
-    xlim = [xmin-.1, xmax+.1]
-    ylim = [ymin-.1, ymax+.1]
+    xlim = [0-.1, 1.1]
+    ylim = [0, 2.5]
 
     lmap = {'r':'R','theta':'Theta'}
     smap = {'Control':'circle','PD':'diamond-open-dot'}
