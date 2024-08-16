@@ -93,39 +93,44 @@ def snp_callback():
     st.session_state['snp_choice'] = st.session_state['new_snp_choice']
 
 
-snp_metrics_path = f'data/hackathon_snp_metrics_deID.txt'
+snp_metrics_path = f'data/updated_hackathon_snp_metrics.txt'
 pathogenic_snps_path = f'data/PATHOGENIC_SNPS_TO_CLUSTER.txt'
 
-snp_metrics = pd.read_csv(snp_metrics_path, sep='\t')
-# print(snp_metrics.head())
-# print(snp_metrics.columns)
-snp_metrics['merge_id'] = 'chr' + snp_metrics['chromosome'].astype(str) + ':' + snp_metrics['position'].astype(str)
-# print(snp_metrics.head())
-# print(snp_metrics.shape)
+if 'snp_metrics' not in st.session_state:
+    snp_metrics = pd.read_csv(snp_metrics_path, sep='\t')
+    snp_metrics['merge_id'] = 'chr' + snp_metrics['chromosome'].astype(str) + ':' + snp_metrics['position'].astype(str)
+    st.session_state['snp_metrics'] = snp_metrics
+else:
+    snp_metrics = st.session_state['snp_metrics']
+
 
 pathogenic_snps = pd.read_csv(pathogenic_snps_path, sep='\t')
 pathogenic_snps[['chr','pos','alt','ref']] = pathogenic_snps['SNP'].str.split(':', expand=True)
 pathogenic_snps['merge_id'] =  pathogenic_snps['chr'].astype(str) + ':' + pathogenic_snps['pos']
-# print(pathogenic_snps.head())
-# print(pathogenic_snps.shape)
 
-merge1 = snp_metrics.merge(pathogenic_snps, how='left', on=['merge_id'])
+merge1 = snp_metrics.merge(pathogenic_snps, how='inner', on=['merge_id'])
 merge1 = merge1.drop_duplicates()
-# print(merge1.head())
-# print(merge1.shape)
-# print(merge1.columns)
+print(merge1.head())
+print(merge1.shape)
+print(len(merge1['SNP'].unique()))
+
+pd.Series(merge1['SNP'].unique()).to_csv(f'table_snps.txt', sep='\t', header=None, index=None)
+
+# for snp in merge1['SNP'].unique():
+#     merge1_subset = merge1[merge1['SNP'] == snp]
+#     print(merge1_subset['GT'].value_counts())
 
 st.title('Cluster Plot Browser')
 
-metric1,metric2 = st.columns([1,1])
 
 num_snps = len(merge1['snpID'].unique())
 num_sample_metrics = len(merge1['Sample_ID'].unique())
 
-merge1 = merge1.drop(columns=['GenTrain_Score','chromosome','position','ancestry'])
+# merge1 = merge1.drop(columns=['GenTrain_Score','chromosome','position','ancestry'])
 
 # get SNP options
 snp_options = ['Select SNP!']+[snp for snp in merge1['SNP'].unique()]
+print(len(snp_options))
 
 # set default SNPs
 if 'snp_choice' not in st.session_state:
@@ -150,3 +155,5 @@ if st.session_state['snp_choice'] != 'Select SNP!':
 
     fig = plot_clusters(snp_df, x_col='Theta', y_col='R', gtype_col='GT', title=st.session_state['snp_choice'])['fig']
     st.plotly_chart(fig, use_container_width=True)
+
+    st.table(snp_df['GT'].value_counts())
