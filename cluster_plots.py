@@ -7,45 +7,7 @@ import pandas as pd
 import streamlit as st
 import plotly.express as px
 
-# snp metrics chromosome callback for session state
-def chr_callback():
-    st.session_state['old_chr_choice'] = st.session_state['chr_choice']
-    st.session_state['chr_choice'] = st.session_state['new_chr_choice']
-
-# snp metrics ancestry callback for session state
-def ancestry_callback():
-    st.session_state['old_ancestry_choice'] = st.session_state['ancestry_choice']
-    st.session_state['ancestry_choice'] = st.session_state['new_ancestry_choice']
-
-def chr_ancestry_select():
-    st.sidebar.markdown('### **Choose a chromosome!**', unsafe_allow_html=True)
-
-    # set chromosome options
-    chr_options=[i for i in range(1,23)]
-
-    # set default chromosome
-    if 'chr_choice' not in st.session_state:
-        st.session_state['chr_choice'] = chr_options[0]
-    if 'old_chr_choice' not in st.session_state:
-        st.session_state['old_chr_choice'] = ""
-
-    # dynamic change of chromosome with selector
-    st.session_state['chr_choice'] = st.sidebar.selectbox(label = 'Chromosome Selection', label_visibility = 'collapsed', options=chr_options, index=chr_options.index(st.session_state['chr_choice']), key='new_chr_choice', on_change=chr_callback)
-
-    st.sidebar.markdown('### **Choose an Ancestry!**', unsafe_allow_html=True)
-
-    # set ancestry options
-    ancestry_options=['AAC','AFR','AJ','AMR','CAH','CAS','EAS','EUR','FIN','MDE','SAS']
-
-    # set default ancestry
-    if 'ancestry_choice' not in st.session_state:
-        st.session_state['ancestry_choice'] = ancestry_options[0]
-    if 'old_ancestry_choice' not in st.session_state:
-        st.session_state['old_ancestry_choice'] = ""
-
-    # dynamic change of ancestry with selector
-    st.session_state['ancestry_choice'] = st.sidebar.selectbox(label = 'Ancestry Selection', label_visibility = 'collapsed', options=ancestry_options, index=ancestry_options.index(st.session_state['ancestry_choice']), key='new_ancestry_choice', on_change=ancestry_callback)
-
+# cluster plot function
 def plot_clusters(df, x_col='theta', y_col='r', gtype_col='gt', title='snp plot'):
     d3 = px.colors.qualitative.D3
 
@@ -57,16 +19,14 @@ def plot_clusters(df, x_col='theta', y_col='r', gtype_col='gt', title='snp plot'
         'NC': d3[3]
     }
 
-    # gtypes_list = (df[gtype_col].unique())
-    # xmin, xmax = df[x_col].min(), df[x_col].max()
-    # ymin, ymax = df[y_col].min(), df[y_col].max()
-
+    # custom limits to make plots look good for publication
     xlim = [0-.2, 1.2]
     ylim = [0-.1, 2.6]
 
     lmap = {'r':'R','theta':'Theta'}
     smap = {'Control':'circle','PD':'diamond-open-dot'}
 
+    # plot and update axes for aesthetics
     fig = px.scatter(df, x=x_col, y=y_col, color=gtype_col, color_discrete_map=cmap, width=650, height=497, labels=lmap, symbol='phenotype', symbol_map=smap)
 
     fig.update_xaxes(range=xlim, nticks=10, zeroline=False)
@@ -74,7 +34,6 @@ def plot_clusters(df, x_col='theta', y_col='r', gtype_col='gt', title='snp plot'
     
     fig.update_layout(margin=dict(r=76, t=63, b=75))
 
-    # fig.update_layout(legend=dict(orientation="h", yanchor="bottom", y=1, xanchor="right", x=1))
 
     fig.update_layout(legend_title_text='Genotype')
 
@@ -88,72 +47,64 @@ def plot_clusters(df, x_col='theta', y_col='r', gtype_col='gt', title='snp plot'
     
     return out_dict
 
+# callback function for cluster plot SNP selector
 def snp_callback():
     st.session_state['old_snp_choice'] = st.session_state['snp_choice']
     st.session_state['snp_choice'] = st.session_state['new_snp_choice']
 
+if __name__ == '__main__':
+    # SNPs and metric path
+    snp_metrics_path = f'data/updated_hackathon_snp_metrics.txt'
+    pathogenic_snps_path = f'data/PATHOGENIC_SNPS_TO_CLUSTER.txt'
 
-snp_metrics_path = f'data/updated_hackathon_snp_metrics.txt'
-pathogenic_snps_path = f'data/PATHOGENIC_SNPS_TO_CLUSTER.txt'
+    # read metrics into session state to cut down on load time and create merge id
+    if 'snp_metrics' not in st.session_state:
+        snp_metrics = pd.read_csv(snp_metrics_path, sep='\t')
+        snp_metrics['merge_id'] = 'chr' + snp_metrics['chromosome'].astype(str) + ':' + snp_metrics['position'].astype(str)
+        st.session_state['snp_metrics'] = snp_metrics
+    else:
+        snp_metrics = st.session_state['snp_metrics']
 
-if 'snp_metrics' not in st.session_state:
-    snp_metrics = pd.read_csv(snp_metrics_path, sep='\t')
-    snp_metrics['merge_id'] = 'chr' + snp_metrics['chromosome'].astype(str) + ':' + snp_metrics['position'].astype(str)
-    st.session_state['snp_metrics'] = snp_metrics
-else:
-    snp_metrics = st.session_state['snp_metrics']
+    # read pathogenic snps and create merge id
+    pathogenic_snps = pd.read_csv(pathogenic_snps_path, sep='\t')
+    pathogenic_snps[['chr','pos','alt','ref']] = pathogenic_snps['SNP'].str.split(':', expand=True)
+    pathogenic_snps['merge_id'] =  pathogenic_snps['chr'].astype(str) + ':' + pathogenic_snps['pos']
 
+    # merge metrics with path snps
+    path_metrics = snp_metrics.merge(pathogenic_snps, how='inner', on=['merge_id'])
+    path_metrics = path_metrics.drop_duplicates()
+    
+    # set title
+    st.title('Cluster Plot Browser')
 
-pathogenic_snps = pd.read_csv(pathogenic_snps_path, sep='\t')
-pathogenic_snps[['chr','pos','alt','ref']] = pathogenic_snps['SNP'].str.split(':', expand=True)
-pathogenic_snps['merge_id'] =  pathogenic_snps['chr'].astype(str) + ':' + pathogenic_snps['pos']
+    # get SNP options
+    snp_options = ['Select SNP!']+[snp for snp in path_metrics['SNP'].unique()]
 
-merge1 = snp_metrics.merge(pathogenic_snps, how='inner', on=['merge_id'])
-merge1 = merge1.drop_duplicates()
-print(merge1.head())
-print(merge1.shape)
-print(len(merge1['SNP'].unique()))
+    # set default SNP
+    if 'snp_choice' not in st.session_state:
+        st.session_state['snp_choice'] = snp_options[0]
+    if 'old_snp_choice' not in st.session_state:
+        st.session_state['old_snp_choice'] = ""
 
-pd.Series(merge1['SNP'].unique()).to_csv(f'table_snps.txt', sep='\t', header=None, index=None)
+    # check if SNP choice is in the options
+    ## Note: this was more of a concern for the full cohort browser, shouldn't happen anymore
+    if st.session_state['snp_choice'] in snp_options:
+        index = snp_options.index(st.session_state['snp_choice'])
 
-# for snp in merge1['SNP'].unique():
-#     merge1_subset = merge1[merge1['SNP'] == snp]
-#     print(merge1_subset['GT'].value_counts())
+    if st.session_state['snp_choice'] not in snp_options:
+        if ((st.session_state['snp_choice'] != 'Select SNP!') and (int(st.session_state['snp_choice'].split('(')[1].split(':')[0]) == st.session_state['old_chr_choice'])):
+            index = 0
 
-st.title('Cluster Plot Browser')
+    # SNP selector
+    st.markdown('### Select SNP for Cluster Plot')
+    st.session_state['snp_choice'] = st.selectbox(label='SNP', label_visibility='collapsed', options=snp_options, index=index, key='new_snp_choice', on_change=snp_callback)
 
+    # if a SNP is selected, plot and output a table of the genotype value counts
+    if st.session_state['snp_choice'] != 'Select SNP!':
+        snp_df = path_metrics[path_metrics['SNP'] == st.session_state['snp_choice']]
+        snp_df = snp_df.reset_index(drop=True)
 
-num_snps = len(merge1['snpID'].unique())
-num_sample_metrics = len(merge1['Sample_ID'].unique())
+        fig = plot_clusters(snp_df, x_col='Theta', y_col='R', gtype_col='GT', title=st.session_state['snp_choice'])['fig']
+        st.plotly_chart(fig, use_container_width=True)
 
-# merge1 = merge1.drop(columns=['GenTrain_Score','chromosome','position','ancestry'])
-
-# get SNP options
-snp_options = ['Select SNP!']+[snp for snp in merge1['SNP'].unique()]
-print(len(snp_options))
-
-# set default SNPs
-if 'snp_choice' not in st.session_state:
-    st.session_state['snp_choice'] = snp_options[0]
-if 'old_snp_choice' not in st.session_state:
-    st.session_state['old_snp_choice'] = ""
-
-if st.session_state['snp_choice'] in snp_options:
-    index = snp_options.index(st.session_state['snp_choice'])
-
-if st.session_state['snp_choice'] not in snp_options:
-    if ((st.session_state['snp_choice'] != 'Select SNP!') and (int(st.session_state['snp_choice'].split('(')[1].split(':')[0]) == st.session_state['old_chr_choice'])):
-        index = 0
-
-st.markdown('### Select SNP for Cluster Plot')
-
-st.session_state['snp_choice'] = st.selectbox(label='SNP', label_visibility='collapsed', options=snp_options, index=index, key='new_snp_choice', on_change=snp_callback)
-
-if st.session_state['snp_choice'] != 'Select SNP!':
-    snp_df = merge1[merge1['SNP'] == st.session_state['snp_choice']]
-    snp_df = snp_df.reset_index(drop=True)
-
-    fig = plot_clusters(snp_df, x_col='Theta', y_col='R', gtype_col='GT', title=st.session_state['snp_choice'])['fig']
-    st.plotly_chart(fig, use_container_width=True)
-
-    st.table(snp_df['GT'].value_counts())
+        st.table(snp_df['GT'].value_counts())
