@@ -108,3 +108,12 @@ if __name__ == '__main__':
         st.plotly_chart(fig, use_container_width=True)
 
         st.table(snp_df['GT'].value_counts())
+
+    ### For plotting all SNPs ###
+    # for snp in snp_options:
+    #     if snp != 'Select SNP!':
+    #         snp_df = path_metrics[path_metrics['SNP'] == snp]
+    #         snp_df = snp_df.reset_index(drop=True)
+
+    #         fig = plot_clusters(snp_df, x_col='Theta', y_col='R', gtype_col='GT', title=snp)['fig']
+    #         fig.write_image(f"plots/{snp}.png")
