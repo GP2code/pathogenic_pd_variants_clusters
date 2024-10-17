@@ -55,30 +55,50 @@ def snp_callback():
 if __name__ == '__main__':
     # SNPs and metric path
     snp_metrics_path = f'data/updated_hackathon_snp_metrics.txt'
-    pathogenic_snps_path = f'data/PATHOGENIC_SNPS_TO_CLUSTER.txt'
+    pathogenic_snps_path = f'data/annotated_pathogenic_vars.txt'
 
     # read metrics into session state to cut down on load time and create merge id
     if 'snp_metrics' not in st.session_state:
         snp_metrics = pd.read_csv(snp_metrics_path, sep='\t')
-        snp_metrics['merge_id'] = 'chr' + snp_metrics['chromosome'].astype(str) + ':' + snp_metrics['position'].astype(str)
+        snp_metrics['merge_id'] = 'chr' + snp_metrics['chromosome'].astype(str) + ':' + snp_metrics['position'].astype(str) + ':' + snp_metrics['a2'] + ':' + snp_metrics['a1']
+        snp_metrics['merge_id2'] = 'chr' + snp_metrics['chromosome'].astype(str) + ':' + snp_metrics['position'].astype(str) + ':' + snp_metrics['a1'] + ':' + snp_metrics['a2']
         st.session_state['snp_metrics'] = snp_metrics
     else:
         snp_metrics = st.session_state['snp_metrics']
+    
+    st.markdown(snp_metrics.shape)
 
     # read pathogenic snps and create merge id
     pathogenic_snps = pd.read_csv(pathogenic_snps_path, sep='\t')
-    pathogenic_snps[['chr','pos','alt','ref']] = pathogenic_snps['SNP'].str.split(':', expand=True)
-    pathogenic_snps['merge_id'] =  pathogenic_snps['chr'].astype(str) + ':' + pathogenic_snps['pos']
+    # pathogenic_snps[['chr','pos','alt','ref']] = pathogenic_snps['SNP'].str.split(':', expand=True)
+    # pathogenic_snps['merge_id'] =  pathogenic_snps['Chr'].astype(str) + ':' + pathogenic_snps['Start'].astype(str)
+    pathogenic_snps['merge_id'] = pathogenic_snps['Chr'].astype(str) + ':' + pathogenic_snps['Start'].astype(str) + ':' + pathogenic_snps['Ref'] + ':' + pathogenic_snps['Alt']
+    st.markdown(pathogenic_snps.shape)
+    
 
     # merge metrics with path snps
-    path_metrics = snp_metrics.merge(pathogenic_snps, how='inner', on=['merge_id'])
-    path_metrics = path_metrics.drop_duplicates()
+    path_metrics1 = snp_metrics.merge(pathogenic_snps, how='inner', on=['merge_id'])
+    path_metrics1 = path_metrics1.drop_duplicates()
+    st.markdown(path_metrics1.shape)
+    st.markdown(len(path_metrics1['merge_id'].unique()))
+
+    path_metrics2 = snp_metrics.merge(pathogenic_snps, how='inner', left_on=['merge_id2'], right_on=['merge_id'])
+    path_metrics2 = path_metrics2.drop(columns=['merge_id_x', 'merge_id_y'], axis=1)
+    path_metrics2 = path_metrics2.rename(columns={'merge_id2':'merge_id'})
+    path_metrics2 = path_metrics2.drop_duplicates()
+    st.markdown(path_metrics2.shape)
+    st.markdown(len(path_metrics2['merge_id'].unique()))
+
+    path_metrics = pd.concat([path_metrics1, path_metrics2], axis=0)
+    st.markdown(path_metrics.shape)
+    st.markdown(len(path_metrics['merge_id'].unique()))
+
     
     # set title
     st.title('Cluster Plot Browser')
 
     # get SNP options
-    snp_options = ['Select SNP!']+[snp for snp in path_metrics['SNP'].unique()]
+    snp_options = ['Select SNP!']+[snp for snp in path_metrics['merge_id'].unique()]
 
     # set default SNP
     if 'snp_choice' not in st.session_state:
@@ -101,7 +121,7 @@ if __name__ == '__main__':
 
     # if a SNP is selected, plot and output a table of the genotype value counts
     if st.session_state['snp_choice'] != 'Select SNP!':
-        snp_df = path_metrics[path_metrics['SNP'] == st.session_state['snp_choice']]
+        snp_df = path_metrics[path_metrics['merge_id'] == st.session_state['snp_choice']]
         snp_df = snp_df.reset_index(drop=True)
 
         fig = plot_clusters(snp_df, x_col='Theta', y_col='R', gtype_col='GT', title=st.session_state['snp_choice'])['fig']
@@ -109,11 +129,11 @@ if __name__ == '__main__':
 
         st.table(snp_df['GT'].value_counts())
 
-    ### For plotting all SNPs ###
-    # for snp in snp_options:
-    #     if snp != 'Select SNP!':
-    #         snp_df = path_metrics[path_metrics['SNP'] == snp]
-    #         snp_df = snp_df.reset_index(drop=True)
+    ## For plotting all SNPs ###
+    for snp in snp_options:
+        if snp != 'Select SNP!':
+            snp_df = path_metrics[path_metrics['merge_id'] == snp]
+            snp_df = snp_df.reset_index(drop=True)
 
-    #         fig = plot_clusters(snp_df, x_col='Theta', y_col='R', gtype_col='GT', title=snp)['fig']
-    #         fig.write_image(f"plots/{snp}.png")
+            fig = plot_clusters(snp_df, x_col='Theta', y_col='R', gtype_col='GT', title=snp)['fig']
+            fig.write_image(f"plots/{snp}.png")
