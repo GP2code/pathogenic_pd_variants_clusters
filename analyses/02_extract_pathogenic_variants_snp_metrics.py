@@ -5,6 +5,21 @@ import os
 import sys
 import subprocess
 
+# GP2 Pathogenic Variant Analysis
+
+# - **Project:** Parkinson’s Disease Pathogenic Variants: Cross-Ancestry Analysis and Microarray Data Validation
+# - **Version:** Python/3.10.15
+    
+## Script Overview
+
+# Helper script to extract pathogenic variants from SNP metrics via swarm for 01_extract_pathogenic_variants_snp_metrics.ipynb
+
+## CHANGELOG
+
+# 17-SEP-2024: Script started
+# 19-NOV-2024: Script cleanup for publication
+
+
 def shell_do(command, log=False, return_log=False):
     print(f'Executing: {(" ").join(command.split())}', file=sys.stderr)
 

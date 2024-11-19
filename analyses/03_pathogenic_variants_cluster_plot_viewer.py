@@ -7,6 +7,21 @@ import pandas as pd
 import streamlit as st
 import plotly.express as px
 
+# GP2 Pathogenic Variant Analysis
+
+# - **Project:** Parkinson’s Disease Pathogenic Variants: Cross-Ancestry Analysis and Microarray Data Validation
+# - **Version:** Python/3.10.15
+    
+## Script Overview
+
+# Script to build pathogenic variant cluster plot viewer streamlit app using SNP metrics extracted in
+# 01_extract_pathogenic_variants_snp_metrics.py and save all pathogenic variant plots to PNG
+
+## CHANGELOG
+
+# 9-OCT-2024: Script started
+# 19-NOV-2024: Script cleanup for publication
+
 # cluster plot function
 def plot_clusters(df, x_col='theta', y_col='r', gtype_col='gt', title='snp plot'):
     d3 = px.colors.qualitative.D3
@@ -129,11 +144,11 @@ if __name__ == '__main__':
 
         st.table(snp_df['GT'].value_counts())
 
-    # ## For plotting all SNPs ###
-    # for snp in snp_options:
-    #     if snp != 'Select SNP!':
-    #         snp_df = path_metrics[path_metrics['merge_id'] == snp]
-    #         snp_df = snp_df.reset_index(drop=True)
+    ## For plotting all SNPs ##
+    for snp in snp_options:
+        if snp != 'Select SNP!':
+            snp_df = path_metrics[path_metrics['merge_id'] == snp]
+            snp_df = snp_df.reset_index(drop=True)
 
-    #         fig = plot_clusters(snp_df, x_col='Theta', y_col='R', gtype_col='GT', title=snp)['fig']
-    #         fig.write_image(f"plots/{snp}.png")
+            fig = plot_clusters(snp_df, x_col='Theta', y_col='R', gtype_col='GT', title=snp)['fig']
+            fig.write_image(f"plots/{snp}.png")

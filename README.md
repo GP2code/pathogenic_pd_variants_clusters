@@ -20,14 +20,16 @@ This is the online repository for the short report titled ***"Parkinson’s Dise
 ```
 THIS_REPO
 ├── README.md
-└── analyses
-    ├── pathogenic_vars
-    │   └── 00_Pathogenic_Variants_Analyses.ipynb
-    └── cluster_plots
-        ├── cluster_plot_metrics.py
-        ├── cluster_plots.py
-        ├── 00_hackathon_rv_extract_snp_metrics.ipynb
-        └── requirements.txt
+├── analyses
+    ├── 00_pathogenic_variants_analyses.ipynb
+    ├── 01_extract_pathogenic_variants_snp_metrics.ipynb
+    ├── 02_extract_pathogenic_variants_snp_metrics.py
+    ├── 03_pathogenic_variants_cluster_plot_viewer.py
+    └── 04_pathogenic_variants_cluster_plot_metrics.py
+└── plots
+    └── .png files for all NBA-genotyped pathogenic variant cluster plots
+└── output
+    └── placeholder directory to read in files created in 00_pathogenic_variants_analyses.ipynb and 01_extract_pathogenic_variants_snp_metrics.ipynb into 03_pathogenic_variants_cluster_plot_viewer.py
 ```
 ---
 ### Analyses Notebooks
@@ -35,7 +37,7 @@ THIS_REPO
 
 | **Directory** | File        | Description                        |
 |---------------|------------------|------------------------------------|
-| pathogenic_vars/   | 00_Pathogenic_Variants_Analyses | Running pathogneic variant annotations and calculating frequencies |
+| analyses/   | 00_Pathogenic_Variants_Analyses | Running pathogneic variant annotations and calculating frequencies |
 | cluster_plots/          | cluster_plots_metrics | x |
 |           | cluster_plots | x |
 |           | 00_hackathon_rv_extract_snp_metrics | x |
