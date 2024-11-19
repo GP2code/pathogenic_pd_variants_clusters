@@ -1,2 +1,4 @@
 data/*
 *.pptx
+
+*.DS_Store
