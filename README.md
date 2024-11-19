@@ -6,7 +6,7 @@
 This is the online repository for the short report titled ***"Parkinson’s Disease Pathogenic Variants: Cross-Ancestry Analysis and Microarray Data Validation"***. This study aims to evaluate the genotyping success of the NeuroBooster array (NBA) and determine the frequencies of pathogenic variants across ancestries.
 
 ### Data Statement
-* All GP2 data are hosted in collaboration with the Accelerating Medicines Partnership in Parkinson's Disease and are available via application on the website (https://gp2.org; release 7 DOI 10.5281/zenodo.10962119).
+* Data (DOI 10.5281/zenodo.10962119; release 7) used in the preparation of this article were obtained from the Global Parkinson’s Genetics Program (GP2).
 
 ### HelpfulLinks
 - [GP2 Website](https://gp2.org/)
