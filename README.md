@@ -27,7 +27,7 @@ THIS_REPO
     ├── 03_pathogenic_variants_cluster_plot_viewer.py
     └── 04_pathogenic_variants_cluster_plot_metrics.py
 └── plots
-    └── .png files for all NBA-genotyped pathogenic variant cluster plots
+    └── PNG files for all NBA-genotyped pathogenic variant cluster plots
 └── output
     └── placeholder directory to read in files created in 00_pathogenic_variants_analyses.ipynb and 01_extract_pathogenic_variants_snp_metrics.ipynb into 03_pathogenic_variants_cluster_plot_viewer.py
 ```
@@ -42,6 +42,8 @@ THIS_REPO
 |             | 02_extract_pathogenic_variants_snp_metrics | Helper Python script to extract pathogenic variant SNP metrics from full GP2 SNP metrics in batch jobs |
 |             | 03_pathogenic_variants_cluster_plot_viewer | Streamlit script to browse pathogenic variant cluster plots |
 |             | 04_pathogenic_variants_cluster_plot_viewer | Helper python script to calculate pathogenic variant cluster plot metrics |
+| plots/   | *.png | PNG files for all NBA-genotyped pathogenic variant cluster plots |
+| plots/   | *empty* | placeholder directory |
 
 ---
 
