@@ -37,10 +37,11 @@ THIS_REPO
 
 | **Directory** | File        | Description                        |
 |---------------|------------------|------------------------------------|
-| analyses/   | 00_Pathogenic_Variants_Analyses | Running pathogneic variant annotations and calculating frequencies |
-| cluster_plots/          | cluster_plots_metrics | x |
-|           | cluster_plots | x |
-|           | 00_hackathon_rv_extract_snp_metrics | x |
+| analyses/   | 00_pathogenic_variants_analyses | Running pathogenic variant annotations and calculating frequencies |
+|             | 01_extract_pathogenic_variants_snp_metrics | Extract pathogenic variant SNP metrics from full GP2 SNP metrics |
+|             | 02_extract_pathogenic_variants_snp_metrics | Helper Python script to extract pathogenic variant SNP metrics from full GP2 SNP metrics in batch jobs |
+|             | 03_pathogenic_variants_cluster_plot_viewer | Streamlit script to browse pathogenic variant cluster plots |
+|             | 04_pathogenic_variants_cluster_plot_viewer | Helper python script to calculate pathogenic variant cluster plot metrics |
 
 ---
 
