@@ -45,7 +45,6 @@ THIS_REPO
 |             | 04_pathogenic_variants_cluster_plot_viewer.py | Helper python script to calculate pathogenic variant cluster plot metrics |
 |             | requirements.txt | Required Python packages for 03_pathogenic_variants_cluster_plot_viewer.py |
 | plots/   | *.png | PNG files for all NBA-genotyped pathogenic variant cluster plots |
-| plots/   | *empty* | placeholder directory |
 
 ---
 
