@@ -1,5 +1,7 @@
 # Parkinson’s Disease Pathogenic Variants: Cross-Ancestry Analysis and Microarray Data Validation
 
+`GP2 ❤️ Open Science 😍`
+
 **Last Updated:** November 2024 
 
 ## Summary
