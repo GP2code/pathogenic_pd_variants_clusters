@@ -20,14 +20,15 @@ This is the online repository for the short report titled ***"Parkinson’s Dise
 ```
 THIS_REPO
 ├── README.md
-├── analyses
-    ├── 00_pathogenic_variants_analyses.ipynb
-    ├── 01_extract_pathogenic_variants_snp_metrics.ipynb
-    ├── 02_extract_pathogenic_variants_snp_metrics.py
-    ├── 03_pathogenic_variants_cluster_plot_viewer.py
-    └── 04_pathogenic_variants_cluster_plot_metrics.py
-└── plots
-    └── PNG files for all NBA-genotyped pathogenic variant cluster plots
+├── analyses 
+│   ├── 00_pathogenic_variants_analyses.ipynb
+│   ├── 01_extract_pathogenic_variants_snp_metrics.ipynb
+│   ├── 02_extract_pathogenic_variants_snp_metrics.py
+│   ├── 03_pathogenic_variants_cluster_plot_viewer.py
+│   ├── 04_pathogenic_variants_cluster_plot_metrics.py
+│   └── requirements.txt
+├── plots
+│   └── PNG files for all NBA-genotyped pathogenic variant cluster plots
 └── output
     └── placeholder directory to read in files created in 00_pathogenic_variants_analyses.ipynb and 01_extract_pathogenic_variants_snp_metrics.ipynb into 03_pathogenic_variants_cluster_plot_viewer.py
 ```
@@ -37,11 +38,12 @@ THIS_REPO
 
 | **Directory** | File        | Description                        |
 |---------------|------------------|------------------------------------|
-| analyses/   | 00_pathogenic_variants_analyses | Running pathogenic variant annotations and calculating frequencies |
-|             | 01_extract_pathogenic_variants_snp_metrics | Extract pathogenic variant SNP metrics from full GP2 SNP metrics |
-|             | 02_extract_pathogenic_variants_snp_metrics | Helper Python script to extract pathogenic variant SNP metrics from full GP2 SNP metrics in batch jobs |
-|             | 03_pathogenic_variants_cluster_plot_viewer | Streamlit script to browse pathogenic variant cluster plots |
-|             | 04_pathogenic_variants_cluster_plot_viewer | Helper python script to calculate pathogenic variant cluster plot metrics |
+| analyses/   | 00_pathogenic_variants_analyses.ipynb | Running pathogenic variant annotations and calculating frequencies |
+|             | 01_extract_pathogenic_variants_snp_metrics.ipynb | Extract pathogenic variant SNP metrics from full GP2 SNP metrics |
+|             | 02_extract_pathogenic_variants_snp_metrics.py | Helper Python script to extract pathogenic variant SNP metrics from full GP2 SNP metrics in batch jobs |
+|             | 03_pathogenic_variants_cluster_plot_viewer.py | Streamlit script to browse pathogenic variant cluster plots |
+|             | 04_pathogenic_variants_cluster_plot_viewer.py | Helper python script to calculate pathogenic variant cluster plot metrics |
+|             | requirements.txt | Required Python packages for 03_pathogenic_variants_cluster_plot_viewer.py |
 | plots/   | *.png | PNG files for all NBA-genotyped pathogenic variant cluster plots |
 | plots/   | *empty* | placeholder directory |
 
