@@ -59,6 +59,6 @@ THIS_REPO
 |     Python Programming Language     | 3.10 |                         http://www.python.org/                         | RRID:SCR_008394 | pandas; numpy |
 |                PLINK                |     1.9 and 2.0     |                   http://www.nitrc.org/projects/plink                  | RRID:SCR_001757 |                                     used for genetic analyses                                     |
 |    ANNOVAR    | version 2020-06-07 | http://www.openbioinformatics.org/annovar/ | RRID:SCR_012821 | refGene; avsnp151; clinvar_20240917; dbnsfp33a |
-|    TOPMed Imputation Server    |                  | https://imputation.biodatacatalyst.nhlbi.nih.gov/#!pages/home |                 | used for NBA genotype imputation |
-|    ClinVar   |  version 2024-09-17 | https://www.ncbi.nlm.nih.gov/clinvar/ |            | used for pathogenic variant annotation |
-|    gnomAD  |  4.1.0 | https://gnomad.broadinstitute.org/ |            | used to compare identified pathogenic variants to previously reported pathogenic variants      |
+|    TOPMed Imputation Server    |                  | https://imputation.biodatacatalyst.nhlbi.nih.gov/#!pages/home | RRID:SCR_015677 | used for NBA genotype imputation |
+|    ClinVar   |  version 2024-09-17 | https://www.ncbi.nlm.nih.gov/clinvar/ | RRID:SCR_006169 | used for pathogenic variant annotation |
+|    gnomAD  |  4.1.0 | https://gnomad.broadinstitute.org/ | RRID:SCR_014964 | used to compare identified pathogenic variants to previously reported pathogenic variants      |
